@@ -49,7 +49,7 @@ fn main() {
 
     let mut pc: usize = 0;
 
-    while true {
-        pc = execute(&program, pc).unwrap();
+    loop {
+        pc = execute(&program, pc).expect("Halting code");
     }
 }
