@@ -104,7 +104,7 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let sum = (value1 * value2) % 32768;
         register[dest] = sum;
         Some(pc+4)
-    } else if op == 10 {
+    } else if op == 11 {
         let dest = memory[pc+1] - 32768;
         let value1 = get_value(memory[pc+2], register);
         let value2 = get_value(memory[pc+3], register);
@@ -130,6 +130,11 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let value = get_value(memory[pc+2], register);
         let result = ((!(value as u16)) as usize) & 32767;        
         register[dest] = result;
+        Some(pc+3)
+    } else if op == 15 {
+        let dest = memory[pc+1] - 32768;
+        let source = memory[pc+2];
+        register[dest] = memory[source];
         Some(pc+3)
     } else if op == 17 {
         stack.push(pc+2);
