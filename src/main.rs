@@ -102,6 +102,13 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let result = value1 & value2;
         register[dest] = result;
         Some(pc+4)
+    } else if op == 13 {
+        let dest = memory[pc+1] - 32768;
+        let value1 = get_value(memory[pc+2], register);
+        let value2 = get_value(memory[pc+3], register);
+        let result = value1 | value2;
+        register[dest] = result;
+        Some(pc+4)
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
