@@ -1,0 +1,20 @@
+use std::env;
+use std::fs::File;
+use std::io::Read;
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() != 2 {
+        println!("Usage: ./synacor-vm FILENAME");
+        return;
+    }
+
+    let mut f = File::open(args[1].to_string()).unwrap();
+    let mut buffer: [u8; 10] = [0; 10];
+
+    // read up to 10 bytes
+    f.read(&mut buffer);
+
+    println!("The bytes: {:?}", buffer);
+}
