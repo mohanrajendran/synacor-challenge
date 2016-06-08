@@ -77,14 +77,16 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
     } else if op == 7 {
         let value = get_value(memory[pc+1], register);
         if value != 0 {
-            Some(memory[pc+2])
+            let dest = get_value(memory[pc+2], register);
+            Some(dest)
         } else {
             Some(pc+3)
         }      
     } else if op == 8 {
         let value = get_value(memory[pc+1], register);
         if value == 0 {
-            Some(memory[pc+2])
+            let dest = get_value(memory[pc+2], register);
+            Some(dest)
         } else {
             Some(pc+3)
         }
@@ -115,6 +117,10 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let result = ((!(value as u16)) as usize) & 32767;        
         register[dest] = result;
         Some(pc+3)
+    } else if op == 17 {
+        stack.push(pc+2);
+        let dest = get_value(memory[pc+1], register);
+        Some(dest)
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
