@@ -20,18 +20,36 @@ fn read_file(file_name: &String, memory: &mut [u16]) -> std::io::Result<()>{
     Ok(())
 }
 
+fn get_value(value: u16, register: &[u16]) -> usize {
+    if value <= 32767 {
+        value as usize
+    } else {
+        register[(value-32768) as usize] as usize
+    }
+}
+
 fn fetch_and_execute(memory: &mut [u16], register: &mut [u16], stack: &mut Vec<u16>, pc: usize) -> Option<usize> {
     let op = memory[pc];
 
     if op == 0 {
         None
-    } else if op ==6 {
+    } else if op == 6 {
         let address = memory[pc+1];
-        if address > 32767 {
-            Some(register[(address-32768) as usize] as usize)
+        Some(get_value(address, register))
+    } else if op == 7 {
+        let value = get_value(memory[pc+1], register);
+        if value != 0 {
+            Some(memory[pc+2] as usize)
         } else {
-            Some(address as usize)
-        }        
+            Some(pc+3)
+        }      
+    } else if op == 8 {
+        let value = get_value(memory[pc+1], register);
+        if value == 0 {
+            Some(memory[pc+2] as usize)
+        } else {
+            Some(pc+3)
+        } 
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
