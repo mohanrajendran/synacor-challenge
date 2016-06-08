@@ -104,6 +104,13 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let sum = (value1 * value2) % 32768;
         register[dest] = sum;
         Some(pc+4)
+    } else if op == 10 {
+        let dest = memory[pc+1] - 32768;
+        let value1 = get_value(memory[pc+2], register);
+        let value2 = get_value(memory[pc+3], register);
+        let sum = value1 % value2;
+        register[dest] = sum;
+        Some(pc+4)
     } else if op == 12 {
         let dest = memory[pc+1] - 32768;
         let value1 = get_value(memory[pc+2], register);
