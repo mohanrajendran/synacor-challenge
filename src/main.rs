@@ -20,11 +20,11 @@ fn read_file(file_name: &String, memory: &mut [u16]) -> std::io::Result<()>{
     Ok(())
 }
 
-fn execute(memory: &mut [u16], pc: usize) -> Option<usize> {
+fn fetch_and_execute(memory: &mut [u16], register: &mut [u16], stack: &mut Vec<u16>, pc: usize) -> Option<usize> {
     let op = memory[pc];
 
     if op == 0 {
-        None 
+        None
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
@@ -48,8 +48,10 @@ fn main() {
     read_file(&args[1], &mut memory).expect("Unable to read program");
 
     let mut pc: usize = 0;
+    let mut register: [u16; 8] = [0; 8];
+    let mut stack: Vec<u16> = Vec::new();
 
     loop {
-        pc = execute(&mut memory, pc).expect("Halting code");
+        pc = fetch_and_execute(&mut memory, &mut register, &mut stack, pc).expect("Halting code");
     }
 }
