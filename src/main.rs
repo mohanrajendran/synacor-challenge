@@ -61,6 +61,16 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
             register[dest] = 0;
         }
         Some(pc+4)
+    } else if op == 5 {
+        let dest = memory[pc+1] - 32768;
+        let value1 = get_value(memory[pc+2], register);
+        let value2 = get_value(memory[pc+3], register);
+        if value1 > value2 {
+            register[dest] = 1;
+        } else {
+            register[dest] = 0;
+        }
+        Some(pc+4)
     } else if op == 6 {
         let address = memory[pc+1];
         Some(get_value(address, register))
