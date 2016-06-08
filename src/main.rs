@@ -42,6 +42,15 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let value = get_value(memory[pc+1], register);
         stack.push(value);
         Some(pc+2)
+    } else if op == 3 {
+        let location = memory[pc+1] - 32768;
+        match stack.pop() {
+            Some(x) => {
+                register[location] = x;
+                Some(pc+2)
+            }
+            None => panic!("Popping an empty stack")
+        }
     } else if op == 4 {
         let dest = memory[pc+1] - 32768;
         let value1 = get_value(memory[pc+2], register);
