@@ -54,14 +54,21 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
             Some(memory[pc+2])
         } else {
             Some(pc+3)
-        } 
+        }
+    } else if op == 9 {
+        let dest = memory[pc+1] - 32768;
+        let value1 = get_value(memory[pc+2], register);
+        let value2 = get_value(memory[pc+3], register);
+        let sum = (value1 + value2) % 32768;
+        register[dest] = sum;
+        Some(pc+4)
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
     } else if op == 21 {
         Some(pc + 1)
     } else {
-        panic!("Unknown op {} {} {}", op, memory[pc+1], memory[pc+2]);
+        panic!("Unknown op {} {} {} {}", op, memory[pc+1], memory[pc+2], memory[pc+3]);
     }
 }
 
