@@ -25,6 +25,13 @@ fn fetch_and_execute(memory: &mut [u16], register: &mut [u16], stack: &mut Vec<u
 
     if op == 0 {
         None
+    } else if op ==6 {
+        let address = memory[pc+1];
+        if address > 32767 {
+            Some(register[(address-32768) as usize] as usize)
+        } else {
+            Some(address as usize)
+        }        
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
