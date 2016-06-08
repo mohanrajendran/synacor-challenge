@@ -38,6 +38,10 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let value = get_value(memory[pc+2], register);
         register[location] = value;
         Some(pc+3)
+    } else if op == 2 {
+        let value = get_value(memory[pc+1], register);
+        stack.push(value);
+        Some(pc+2)
     } else if op == 4 {
         let dest = memory[pc+1] - 32768;
         let value1 = get_value(memory[pc+2], register);
