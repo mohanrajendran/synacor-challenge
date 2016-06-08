@@ -109,6 +109,12 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let result = value1 | value2;
         register[dest] = result;
         Some(pc+4)
+     } else if op == 14 {
+        let dest = memory[pc+1] - 32768;
+        let value = get_value(memory[pc+2], register);
+        let result = ((!(value as u16)) as usize) & 32767;        
+        register[dest] = result;
+        Some(pc+3)
     } else if op == 19 {
         print!("{}", memory[pc+1] as u8 as char);
         Some(pc + 2)
