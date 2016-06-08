@@ -152,6 +152,12 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let source = get_value(memory[pc+2], register);
         register[dest] = memory[source];
         Some(pc+3)
+    } else if op == 16 {
+        println!("WMEM {} {}", memory[pc+1], memory[pc+2]);
+        let dest = get_value(memory[pc+1], register);
+        let source = get_value(memory[pc+2], register);
+        memory[dest] = source;
+        Some(pc+3)
     } else if op == 17 {
         println!("CALL {}", memory[pc+1]);
         stack.push(pc+2);
