@@ -1,6 +1,7 @@
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::io;
 
 fn read_file(file_name: &String, memory: &mut [usize]) -> std::io::Result<()>{
     let mut f = try!(File::open(file_name.to_string()));
@@ -30,6 +31,7 @@ fn get_value(value: usize, register: &[usize]) -> usize {
 
 fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut Vec<usize>, pc: usize) -> Option<usize> {
     let op = memory[pc];
+    //println!("{}", pc);
 
     if op == 0 {
         //println!("HALT");
@@ -139,7 +141,7 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let result = value1 | value2;
         register[dest] = result;
         Some(pc+4)
-     } else if op == 14 {
+    } else if op == 14 {
         //println!("NOT {} {}", memory[pc+1], memory[pc+2]);
         let dest = memory[pc+1] - 32768;
         let value = get_value(memory[pc+2], register);
@@ -171,6 +173,21 @@ fn fetch_and_execute(memory: &mut [usize], register: &mut [usize], stack: &mut V
         let character = get_value(memory[pc+1], register);
         print!("{}", character as u8 as char);
         Some(pc + 2)
+    } else if op == 20 {
+        //println!("IN {}", memory[pc+1]);
+        let dest = memory[pc+1] - 32768;
+        match io::stdin().bytes().next() {
+            Some(Ok(v)) => {
+                //println!("{}", v);
+                if v == 13 { //Skip Carriage Return, Windows Quirk
+                    Some(pc) 
+                } else {
+                    register[dest] = v as usize;
+                    Some(pc + 2)
+                }
+            }
+            _ => panic!("Input error")
+        }        
     } else if op == 21 {
         Some(pc + 1)
     } else {
